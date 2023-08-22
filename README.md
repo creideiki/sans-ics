@@ -8,7 +8,9 @@ to standard output.
 
 Run it as:
 
-   ./fetch-sans-ics url > calendar.ics
+```
+./fetch-sans-ics url > calendar.ics
+```
 
 With the URL for the summit agenda page.
 
