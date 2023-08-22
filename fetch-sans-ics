@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require 'cgi'
+require 'icalendar'
+require 'nokogiri'
+require 'open-uri'
+
+if ARGV.size != 1 or ARGV[0][0] == '-'
+  abort 'Usage: fetch-sans-ics summit-agenda-url > summit.ics'
+end
+
+url = ARGV[0]
+doc = Nokogiri::HTML(URI.open(url))
+links = doc.css 'a[calendar="ical"]'
+
+unified_calendar = Icalendar::Calendar.new
+
+links.each do |link|
+  calendars = Icalendar::Calendar.parse(CGI::unescape(link['href'].split(',')[1..].join))
+  calendars.each do |cal|
+    cal.events.each do |event|
+      unified_calendar.events << event
+    end
+  end
+end
+
+puts unified_calendar.to_ical
